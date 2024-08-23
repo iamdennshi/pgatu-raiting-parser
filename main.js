@@ -1,11 +1,18 @@
+const url = 'https://pgatu.ru/sys/rating/view_grid';
+
 function run(text, snils) {
   try {
-    const template = new RegExp(`<td>\\d+<\/td>\\s*<td>${snils}<\/td>`);
-    const numberTemplate = /\d+/;
-    const totalTemplate = /<li>Количество мест: <b>\d+<\/b><\/li>/;
+    // Регулярки с использованием lookahead и lookbehind
+    const positionTemplate = new RegExp(
+      `(?<=<td>)\\d+(?=<\/td>\\s*<td>${snils}<\/td>)`
+    );
 
-    const position = text.match(template)[0].match(numberTemplate)[0];
-    const total = text.match(totalTemplate)[0].match(numberTemplate)[0];
+    const totalTemplate = new RegExp(
+      `(?<=<li>Количество мест: <b>)\\d+(?=<\/b><\/li>)`
+    );
+
+    const position = text.match(positionTemplate)[0];
+    const total = text.match(totalTemplate)[0];
 
     console.log(`${position}/${total}`);
   } catch (error) {
@@ -42,7 +49,6 @@ function testConcourseId(concourseId) {
     process.exit(1);
   }
 
-  const url = 'https://pgatu.ru/sys/rating/view_grid';
   const snils = process.env.SNILS;
   const concourseId = process.env.CONCOURSE_ID;
 
