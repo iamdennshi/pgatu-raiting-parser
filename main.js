@@ -11,10 +11,26 @@ function run(text, snils) {
       `(?<=<li>Количество мест: <b>)\\d+(?=<\/b><\/li>)`
     );
 
+    // Позиция в рейтинге
     const position = text.match(positionTemplate)[0];
+    // Общее количество мест
     const total = text.match(totalTemplate)[0];
 
-    console.log(`${position}/${total}`);
+    const rowTemplate = /<tr>\s*<td>\d+<\/td>(\s*<td>.*<\/td>){9}\s*<\/tr>/g;
+    const snilsTemplate = new RegExp(`(?<=<td>)${snils}(?=<\/td>)`);
+    const passedTemplate = /(?<=<td>)\+(?=<\/td>\s*<td>\d+<\/td>)/;
+    // Место относительно сданных оригиналов
+    let positionAmongPassed = 1;
+
+    for (tr of text.matchAll(rowTemplate)) {
+      if (snilsTemplate.test(tr[0])) break;
+
+      if (passedTemplate.test(tr[0])) {
+        positionAmongPassed++;
+      }
+    }
+
+    console.log(`${position}(${positionAmongPassed})/${total}`);
   } catch (error) {
     if (error instanceof TypeError) {
       console.error(`Снилс ${snils} не найден`);
