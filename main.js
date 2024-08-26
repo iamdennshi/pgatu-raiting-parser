@@ -53,7 +53,7 @@ function testConcourseId(concourseId) {
 (async function () {
   if (!testSnils(process.env.SNILS)) {
     console.error(
-      `${process.env.SNILS} - не верный формат SNILS в .env\nПример: 143-795-285 95`
+      `${process.env.SNILS} - не верный формат SNILS в .env\nПример: ###-###-### ##`
     );
     process.exit(1);
   }
